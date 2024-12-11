@@ -6,9 +6,11 @@ import 'package:thedaging/app/modules/profile/views/profile_view.dart';
 
 import '../../favorit/views/favorit_view.dart';
 import '../../history/views/history_view.dart';
+import '../../menuadmin/views/menuadmin_view.dart';
 import '../../menudaging/views/daging_view.dart';
 import '../../menujeroan/views/jeroan_view.dart';
 import '../../menutulang/views/tulang_view.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -156,6 +158,7 @@ class MainPage extends StatelessWidget {
           ),
         ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         selectedItemColor: Colors.red.shade900,
@@ -173,6 +176,7 @@ class MainPage extends StatelessWidget {
               break;
           }
         },
+
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -188,6 +192,24 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
+      // Tombol "+", hanya ditampilkan jika user email adalah admin123@gmail.com
+      floatingActionButton: Get.find<AuthController>().userEmail.value == "admin123@gmail.com"
+          ? Align(
+        alignment: Alignment.topCenter, // Posisi tombol di tengah atas
+        child: Padding(
+          padding: const EdgeInsets.only(top: 700.0), // Jarak dari atas
+          child: FloatingActionButton(
+            onPressed: () {
+              Get.to(() => MenuAdminPage()); // Navigasi ke MenuDagingPage
+            },
+            backgroundColor: Colors.red.shade900,
+            child: const Icon(Icons.add, color: Colors.white),
+          ),
+        ),
+      )
+          : null,
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

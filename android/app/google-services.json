@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "353083572677",
+    "project_id": "thedagingz",
+    "storage_bucket": "thedagingz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353083572677:android:9b50bb822852424b344bac",
+        "android_client_info": {
+          "package_name": "com.thedaging.thedaging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw2yDmJgHh3Jt5ZYI2pd7HKVisZFFs4gY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

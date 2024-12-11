@@ -22,15 +22,15 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => LoginScreen(),
+      page: () => LoginPage(),
     ),
     GetPage(
       name: _Paths.REGISTER,
-      page: () => RegisterScreen(),
+      page: () => RegisterPage(),
     ),
     GetPage(
       name: _Paths.REGISTER,
-      page: () => RegisterScreen(),
+      page: () => RegisterPage(),
     ),
     GetPage(
       name: _Paths.HOME,

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:thedaging/app/modules/home/views/home_view.dart';
+import 'package:get/get.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+import '../controllers/auth_controller.dart';
+
+class RegisterPage extends StatelessWidget {
+  final AuthController authController = Get.put(AuthController());
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  RegisterPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +27,9 @@ class RegisterScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: Text(
                       'Register',
                       style: TextStyle(
                         fontSize: 40,
@@ -40,11 +46,12 @@ class RegisterScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: emailController,
+                      decoration: const InputDecoration(
                         hintText: 'Email',
                         border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        contentPadding: const EdgeInsets.symmetric(
+                        prefixIcon: Icon(Icons.email_outlined),
+                        contentPadding: EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 16,
                         ),
@@ -59,13 +66,14 @@ class RegisterScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: TextField(
+                      controller: passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Password',
                         border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: const Icon(Icons.visibility_off),
-                        contentPadding: const EdgeInsets.symmetric(
+                        prefixIcon: Icon(Icons.lock_outline),
+                        suffixIcon: Icon(Icons.visibility_off),
+                        contentPadding: EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 16,
                         ),
@@ -79,12 +87,9 @@ class RegisterScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigate to Home Screen after successful registration
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MainPage(),
-                          ),
+                        authController.register(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -107,11 +112,10 @@ class RegisterScreen extends StatelessWidget {
                   // Login Link
                   TextButton(
                     onPressed: () {
-                      // Navigate back to Login Screen
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: const Text(
-                      'Already have an account? login',
+                      'Already have an account? Login',
                       style: TextStyle(
                         color: Colors.white,
                         decoration: TextDecoration.underline,
