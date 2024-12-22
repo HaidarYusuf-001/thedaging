@@ -72,6 +72,7 @@ class MenuDagingPage extends StatelessWidget {
                         item['title']!,
                         item['price']!,
                         'assets/images/${item['image']}',
+                        index,
                       ),
                     );
                   },
@@ -84,7 +85,7 @@ class MenuDagingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildItemContainer(String title, String price, String imagePath) {
+   Widget _buildItemContainer(String title, String price, String imagePath, int index) {
     return Container(
       width: double.infinity,
       decoration: ShapeDecoration(
@@ -121,82 +122,111 @@ class MenuDagingPage extends StatelessWidget {
               child: Image.asset(imagePath, fit: BoxFit.fill),
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Work Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  price,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontFamily: 'Work Sans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Work Sans',
-                  fontWeight: FontWeight.w400,
+              // Tombol Delete
+              if (controller.isAdmin)
+                GestureDetector(
+                  onTap: () {
+                    Get.dialog(
+                      AlertDialog(
+                        title: Text('Delete Item'),
+                        content: Text('Are you sure you want to delete this item?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteItem(index);
+                              Get.back();
+                            },
+                            child: Text('Delete'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(Icons.delete, color: Colors.red),
+                  ),
+                ),
+              // Tombol Favorit
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Image.asset(
+                  'assets/images/ci_heart-01.png',
+                  width: 24,
+                  height: 24,
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                price,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontFamily: 'Work Sans',
-                  fontWeight: FontWeight.w600,
+              // Tombol Add
+              GestureDetector(
+                onTap: () {
+                  controller.addToCart(title, price, imagePath.split('/').last);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF074D09),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          Spacer(),
-          Stack(
-            alignment: Alignment.center, // Mengatur alignment utama dari stack
-            children: [
-              Align(
-                alignment: Alignment.topRight, // Atur posisi gambar sesuai kebutuhan
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25, bottom: 37), // Jarak gambar dari tepi
-                  child: Image.asset(
-                    'assets/images/ci_heart-01.png',
-                    width: 24, // Ukuran gambar
-                    height: 24,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight, // Mengatur posisi tombol "Add"
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20, top: 45),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                    decoration: ShapeDecoration(
-                      color: Color(0xFF074D09),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0x3F000000),
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Add',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )
-
         ],
       ),
     );
