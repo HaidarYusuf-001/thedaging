@@ -1,9 +1,17 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../auth/controllers/auth_controller.dart';
+import '../../home/controllers/cart_controller.dart';
+
 class MenuDagingController extends GetxController {
   final GetStorage box = GetStorage();
   var items = <Map<String, String>>[].obs;
+  final CartController cartController = Get.find<CartController>();
+  final authController = Get.find<AuthController>();
+
+  // Updated admin check using AuthController
+  bool get isAdmin => authController.userEmail.value == "admin123@gmail.com";
 
   // Add descriptions for each item
   final Map<String, String> itemDescriptions = {
@@ -28,6 +36,29 @@ class MenuDagingController extends GetxController {
     box.write('dagingItems', items.toList());
   }
 
+  void deleteItem(int index) {
+    if (isAdmin) {
+      items.removeAt(index);
+      saveData();
+      Get.snackbar(
+        'Item Deleted',
+        'Item has been removed from the menu',
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 2),
+      );
+    }
+  }
+
+  void addToCart(String title, String price, String image) {
+    cartController.addToCart(title, price, 'assets/images/$image', 1);
+    Get.snackbar(
+      'Added to Cart',
+      '$title has been added to your cart',
+      snackPosition: SnackPosition.TOP,
+      duration: Duration(seconds: 2),
+    );
+  }
+
   void loadData() {
     var storedItems = box.read('dagingItems');
     if (storedItems != null && storedItems is List) {
@@ -36,7 +67,7 @@ class MenuDagingController extends GetxController {
       );
     } else {
       items.assignAll([
-        {'title': 'Daging Potong', 'price': '\$40.00', 'image': 'Daging*2-removebg-preview 1.png'},
+        {'title': 'Daging Potong', 'price': '\$40.00', 'image': 'Daging_2-removebg-preview 1.png'},
         {'title': 'Daging Ekor', 'price': '\$40.00', 'image': 'ekor-removebg-preview 1.png'},
         {'title': 'Daging Tetelan', 'price': '\$40.00', 'image': 'tetlan-removebg-preview 1.png'},
         {'title': 'Daging Lidah', 'price': '\$40.00', 'image': 'lidah-removebg-preview 1.png'},
@@ -44,6 +75,8 @@ class MenuDagingController extends GetxController {
       saveData();
     }
   }
+
+
 
   String getItemDescription(String title) {
     return itemDescriptions[title] ?? 'Description not available';

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:thedaging/app/modules/home/views/background.dart';
 import 'package:thedaging/app/modules/profile/views/profile_view.dart';
-
 import '../../favorit/views/favorit_view.dart';
 import '../../history/views/history_view.dart';
 import '../../menuadmin/views/menuadmin_view.dart';
@@ -14,10 +13,12 @@ import '../../menujeroan/views/jeroan_view.dart';
 import '../../menutulang/views/tulang_view.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
+import '../controllers/cart_controller.dart';
 
 class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
 
+  final CartController cartController = Get.find<CartController>();
   final ProfileController profileController = Get.put(ProfileController());
 
   @override
@@ -27,11 +28,10 @@ class MainPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
-            // Wrap the content in SingleChildScrollView for better scroll behavior
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40), // Jarak dari atas
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -77,7 +77,6 @@ class MainPage extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 const Text(
                   "Mau pesan daging apa hari ini?",
                   style: TextStyle(
@@ -111,18 +110,23 @@ class MainPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CategoryCard(
-                        title: "Daging",
-                        icon: Icons.restaurant_menu,
-                        isSelected: true),
-
-                    CategoryCard(title: "Jeroan", icon: Icons.restaurant_menu),
-                    CategoryCard(title: "Tulang", icon: Icons.restaurant_menu),
+                      title: "Daging",
+                      icon: Icons.restaurant_menu,
+                      isSelected: true,
+                    ),
+                    CategoryCard(
+                      title: "Jeroan",
+                      icon: Icons.restaurant_menu,
+                    ),
+                    CategoryCard(
+                      title: "Tulang",
+                      icon: Icons.restaurant_menu,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Aligns content on both sides
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Rekomendasi daging untukmu",
@@ -133,18 +137,15 @@ class MainPage extends StatelessWidget {
                       ),
                     ),
                     Icon(
-                      Icons
-                          .arrow_circle_right_outlined, // Use the appropriate arrow icon
-                      color: Colors.black, // Set the color for the icon
-                      size: 24, // Adjust the size of the icon
+                      Icons.arrow_circle_right_outlined,
+                      color: Colors.black,
+                      size: 24,
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 16),
-                // Limit the height of the ListView to avoid stretching
                 SizedBox(
-                  height: 200, // Increased height for more visible cards
+                  height: 200,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: const [
@@ -166,13 +167,57 @@ class MainPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 30), // Extra space at the bottom
+                const SizedBox(height: 24),
+                if (Get.find<AuthController>().userEmail.value != "admin123@gmail.com")
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Keranjang Belanja",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Navigate to cart page
+                        },
+                        child: Text(
+                          "Lihat Semua",
+                          style: TextStyle(
+                            color: Colors.red.shade900,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 16),
+                if (Get.find<AuthController>().userEmail.value != "admin123@gmail.com")
+                  SizedBox(
+                    height: 120,
+                    child: Obx(() => ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: cartController.cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cartController.cartItems[index];
+                        return CartItemCard(
+                          title: item['title'],
+                          price: item['price'],
+                          quantity: item['quantity'],
+                          imagePath: item['imagePath'],
+                        );
+                      },
+                    )),
+                  ),
+                const SizedBox(height: 30),
               ],
             ),
           ),
         ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         selectedItemColor: Colors.red.shade900,
@@ -180,17 +225,16 @@ class MainPage extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Get.to(() => MainPage()); // Navigasi ke BerandaPage
+              Get.to(() => MainPage());
               break;
             case 1:
-              Get.to(() => HistoryPage()); // Navigasi ke HistoryPage
+              Get.to(() => HistoryPage());
               break;
             case 2:
-              Get.to(() => FavoritPage()); // Navigasi ke FavoritPage
+              Get.to(() => FavoritPage());
               break;
           }
         },
-
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -206,15 +250,14 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
-      // Tombol "+", hanya ditampilkan jika user email adalah admin123@gmail.com
       floatingActionButton: Get.find<AuthController>().userEmail.value == "admin123@gmail.com"
           ? Align(
-        alignment: Alignment.topCenter, // Posisi tombol di tengah atas
+        alignment: Alignment.topCenter,
         child: Padding(
-          padding: const EdgeInsets.only(top: 700.0), // Jarak dari atas
+          padding: const EdgeInsets.only(top: 700.0),
           child: FloatingActionButton(
             onPressed: () {
-              Get.to(() => MenuAdminPage()); // Navigasi ke MenuDagingPage
+              Get.to(() => MenuAdminPage());
             },
             backgroundColor: Colors.red.shade900,
             child: const Icon(Icons.add, color: Colors.white),
@@ -222,7 +265,6 @@ class MainPage extends StatelessWidget {
         ),
       )
           : null,
-
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -244,13 +286,12 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigasi berdasarkan kategori
         if (title == "Daging") {
-          Get.to(() => MenuDagingPage()); // Navigasi ke MenuDagingPage
+          Get.to(() => MenuDagingPage());
         } else if (title == "Jeroan") {
-          Get.to(() => MenuJeroanPage()); // Navigasi ke MenuJeroanPage
+          Get.to(() => MenuJeroanPage());
         } else if (title == "Tulang") {
-          Get.to(() => MenuTulangPage()); // Navigasi ke MenuTulangPage
+          Get.to(() => MenuTulangPage());
         }
       },
       child: Container(
@@ -277,7 +318,6 @@ class CategoryCard extends StatelessWidget {
   }
 }
 
-
 class RecommendationCard extends StatelessWidget {
   final String title;
   final double rating;
@@ -293,9 +333,9 @@ class RecommendationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150, // Keeping width larger for better visibility
+      width: 150,
       constraints: const BoxConstraints(
-        maxHeight: 180, // Increase max height to accommodate larger image
+        maxHeight: 180,
       ),
       margin: const EdgeInsets.symmetric(horizontal: 6.0),
       padding: const EdgeInsets.all(12.0),
@@ -311,33 +351,29 @@ class RecommendationCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center, // Center content vertically
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // Center content horizontally
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Make the image larger and ensure it fits the card properly
           Image.asset(
             imagePath,
-            height: 100, // Increased height for the image
-            fit: BoxFit
-                .cover, // Ensures the image fits properly within the space
+            height: 100,
+            fit: BoxFit.cover,
           ),
-          const SizedBox(height: 8), // Add some space between image and text
+          const SizedBox(height: 8),
           Text(
             title,
             textAlign: TextAlign.center,
-            maxLines: 1, // Limit to 1 line for title
-            overflow: TextOverflow.ellipsis, // Truncate text if it's too long
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 8), // Add some space between text and rating
+          const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center, // Center the row
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.star, color: Colors.orange, size: 18),
               const SizedBox(width: 4),
@@ -349,6 +385,88 @@ class RecommendationCard extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CartItemCard extends StatelessWidget {
+  final String title;
+  final String price;
+  final int quantity;
+  final String imagePath;
+
+  const CartItemCard({
+    Key? key,
+    required this.title,
+    required this.price,
+    required this.quantity,
+    required this.imagePath,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      margin: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              imagePath,
+              width: 70,
+              height: 70,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  price,
+                  style: TextStyle(
+                    color: Colors.red.shade900,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Jumlah: $quantity',
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

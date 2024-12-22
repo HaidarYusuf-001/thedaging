@@ -69,7 +69,7 @@ class MenuDagingPage extends StatelessWidget {
                       child: _buildItemContainer(
                         item['title']!,
                         item['price']!,
-                        'assets/images/${item['image']}',
+                        'assets/images/${item['image']}', index
                       ),
                     );
                   },
@@ -82,7 +82,7 @@ class MenuDagingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildItemContainer(String title, String price, String imagePath) {
+  Widget _buildItemContainer(String title, String price, String imagePath, int index) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(
@@ -112,28 +112,30 @@ class MenuDagingPage extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 94,
-                height: 81,
-                decoration: ShapeDecoration(
-                  color: Color(0xFFE0E0E0),
-                  shape: OvalBorder(),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Image.asset(imagePath, fit: BoxFit.fill),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 94,
+              height: 81,
+              decoration: ShapeDecoration(
+                color: Color(0xFFE0E0E0),
+                shape: OvalBorder(),
+                shadows: [
+                  BoxShadow(
+                    color: Color(0x3F000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 4),
+
+                  ),
+                ],
               ),
+              child: Image.asset(imagePath, fit: BoxFit.fill),
             ),
-            Column(
+          ),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -158,59 +160,87 @@ class MenuDagingPage extends StatelessWidget {
                 ),
               ],
             ),
-            Spacer(),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 25, bottom: 37),
-                    child: Image.asset(
-                      'assets/images/ci_heart-01.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20, top: 45),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                      decoration: ShapeDecoration(
-                        color: Color(0xFF074D09),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
+          ),
+          Row(
+            children: [
+              // Tombol Delete
+              if (controller.isAdmin)
+                GestureDetector(
+                  onTap: () {
+                    Get.dialog(
+                      AlertDialog(
+                        title: Text('Delete Item'),
+                        content: Text('Are you sure you want to delete this item?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteItem(index);
+                              Get.back();
+                            },
+                            child: Text('Delete'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                            ),
                           ),
                         ],
                       ),
-                      child: Center(
-                        child: Text(
-                          'Add',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(Icons.delete, color: Colors.red),
+                  ),
+                ),
+              // Tombol Favorit
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Image.asset(
+                  'assets/images/ci_heart-01.png',
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+              // Tombol Add
+              GestureDetector(
+                onTap: () {
+                  controller.addToCart(title, price, imagePath.split('/').last);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF074D09),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
-              ],
-            )
-          ],
-        ),
-      ),
+              ),
+            ],
+          ),
+        ],
+      ),),
     );
   }
 }

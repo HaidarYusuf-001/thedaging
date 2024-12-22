@@ -18,83 +18,155 @@ class MenuAdminPage extends StatelessWidget {
     Get.put(MenuDagingController());
     Get.put(MenuJeroanController());
     Get.put(MenuTulangController());
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Menu Admin"),
+        title: Text(
+          "Menu Admin",
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'Work Sans',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: Colors.red.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: controller.namaController,
-              decoration: InputDecoration(
-                labelText: "Nama",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: controller.hargaController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Harga",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            Obx(() {
-              return DropdownButton<String>(
-                value: controller.selectedMenu.value,
-                items: menuOptions.map((String menu) {
-                  return DropdownMenuItem<String>(
-                    value: menu,
-                    child: Text(menu),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.red.shade900, Colors.red.shade600],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Tambah Menu",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Work Sans',
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: controller.namaController,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "Nama Menu",
+                    labelStyle: TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'Work Sans',
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: controller.hargaController,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "Harga",
+                    labelStyle: TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'Work Sans',
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Obx(() {
+                  return DropdownButton<String>(
+                    value: controller.selectedMenu.value,
+                    isExpanded: true,
+                    dropdownColor: Colors.red.shade400,
+                    style: TextStyle(color: Colors.white),
+                    items: menuOptions.map((String menu) {
+                      return DropdownMenuItem<String>(
+                        value: menu,
+                        child: Text(
+                          menu,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Work Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      controller.selectedMenu.value = newValue!;
+                    },
                   );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  controller.selectedMenu.value = newValue!;
-                },
-              );
-            }),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                String nama = controller.namaController.text;
-                int harga = int.tryParse(controller.hargaController.text) ?? 0;
+                }),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    String nama = controller.namaController.text;
+                    int harga =
+                        int.tryParse(controller.hargaController.text) ?? 0;
 
-                // Mengirim data ke controller yang sesuai
-                if (controller.selectedMenu.value == "Daging") {
-                // Memastikan controller sudah dipasang dan menambah item
-                Get.find<MenuDagingController>().addItem(
-                nama, // title
-                '\$$harga', // price
-                'default.png' // image
-                );
-                Get.to(() => MenuDagingPage());
-                }
-                else if (controller.selectedMenu.value == "Jeroan") {
-                  // Memastikan controller sudah dipasang dan menambah item
-                  Get.find<MenuJeroanController>().addItem(
-                      nama, // title
-                      '\$$harga', // price
-                      'default.png' // image
-                  );
-                  Get.to(() => MenuJeroanPage());
-                }
-                else if (controller.selectedMenu.value == "Tulang") {
-                  // Memastikan controller sudah dipasang dan menambah item
-                  Get.find<MenuTulangController>().addItem(
-                      nama, // title
-                      '\$$harga', // price
-                      'default.png' // image
-                  );
-                  Get.to(() => MenuTulangPage());
-                }
-              },
-              child: Text("Kirim Data"),
+                    // Mengirim data ke controller yang sesuai
+                    if (controller.selectedMenu.value == "Daging") {
+                      Get.find<MenuDagingController>().addItem(
+                          nama, // title
+                          '\$$harga', // price
+                          'default.png' // image
+                      );
+                      Get.to(() => MenuDagingPage());
+                    } else if (controller.selectedMenu.value == "Jeroan") {
+                      Get.find<MenuJeroanController>().addItem(
+                          nama, // title
+                          '\$$harga', // price
+                          'default.png' // image
+                      );
+                      Get.to(() => MenuJeroanPage());
+                    } else if (controller.selectedMenu.value == "Tulang") {
+                      Get.find<MenuTulangController>().addItem(
+                          nama, // title
+                          '\$$harga', // price
+                          'default.png' // image
+                      );
+                      Get.to(() => MenuTulangPage());
+                    }
+                  },
+                  child: Text(
+                    "Kirim Data",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    Colors.red.shade300, // Tombol berwarna merah muda
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
