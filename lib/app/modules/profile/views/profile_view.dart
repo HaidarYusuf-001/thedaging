@@ -1,95 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'dart:io';
+import '../controllers/profile_controller.dart';
+import 'background.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
-
-  void _logout(BuildContext context) {
-    // Fungsi untuk mengarahkan pengguna ke layar login
-    Navigator.pushReplacementNamed(context, '/login');
-  }
+class ProfileView extends StatelessWidget {
+  final ProfileController _controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red.shade900,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'Profile Page',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Profile', style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await _controller.storage.erase();
+              Get.offAllNamed('/login');
+            },
+            color: Colors.white,
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            const CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/images/profile.png'),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Nama Pengguna',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'email@example.com',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Divider(thickness: 1.5, color: Colors.red),
-            const SizedBox(height: 20),
-            const Text(
-              'Informasi Lain:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Alamat: Jalan Contoh No.123',
-              style: TextStyle(color: Colors.black54),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'No. Telepon: 081234567890',
-              style: TextStyle(color: Colors.black54),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade900,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+      body: Background(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Obx(() => Column(
+              children: [
+                // Profile Image Section
+                Center(
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _controller.profileImagePath.value.isNotEmpty
+                            ? FileImage(File(_controller.profileImagePath.value))
+                            : const AssetImage('assets/default_avatar.png') as ImageProvider,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              onPressed: () => _logout(context),
-              child: const Text('Logout'),
-            ),
-            const SizedBox(height: 20),
-          ],
+                const SizedBox(height: 16),
+
+                Text(
+                  'Hai, ${_controller.name.value} 👋',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Profile Menu Card
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildMenuItem(
+                        icon: Icons.person,
+                        title: 'Informasi Profil',
+                        subtitle: 'Nama, Email, Alamat, No. Telepon',
+                        onTap: () => Get.toNamed('/editprofile'),
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.shopping_bag,
+                        title: 'Pesanan Saya',
+                        subtitle: 'Lihat riwayat pesanan',
+                        onTap: () {},
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.favorite,
+                        title: 'Wishlist',
+                        subtitle: 'Produk yang Anda simpan',
+                        onTap: () {},
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.location_on,
+                        title: 'Alamat Tersimpan',
+                        subtitle: 'Atur alamat pengiriman',
+                        onTap: () {},
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.payment,
+                        title: 'Pembayaran',
+                        subtitle: 'Metode pembayaran tersimpan',
+                        onTap: () {},
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.settings,
+                        title: 'Setting',
+                        subtitle: 'Gatau pokonya buat setting',
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.red.shade900),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(subtitle),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }

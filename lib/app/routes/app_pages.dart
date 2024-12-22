@@ -6,6 +6,9 @@ import 'package:thedaging/app/modules/profile/views/profile_view.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/menudaging/bindings/daging_binding.dart';
+import '../modules/menudaging/views/dagingdetails.dart';
+import '../modules/profile/views/edit_profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -34,8 +37,21 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.HOME,
-      page: () => ProfilePage(),
+      page: () => ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.DETAILS,
+      page: () => DagingDetails(
+        itemData: Get.arguments['itemData'],
+        description: Get.arguments['description'],
+      ),
+      binding: MenuDagingBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDITPROFILE,
+      page: () => EditProfileView(),
+
     ),
     // GetPage(
     //   name: _Paths.ITEMS,

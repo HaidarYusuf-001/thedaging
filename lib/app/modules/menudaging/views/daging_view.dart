@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../../../routes/app_pages.dart';
 import '../controllers/daging_controller.dart';
 
 class MenuDagingPage extends StatelessWidget {
@@ -16,16 +16,14 @@ class MenuDagingPage extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              top: 60, // Atur posisi vertikal (contohnya 40 untuk jarak dari atas)
-              left: 16, // Atur posisi horizontal (contohnya 16 untuk jarak dari kiri)
+              top: 60,
+              left: 16,
               child: GestureDetector(
-                onTap: () {
-                  Get.back(); // Kembali ke halaman sebelumnya
-                },
+                onTap: () => Get.back(),
                 child: Image.asset(
                   'assets/images/Vector.png',
-                  width: 24, // Sesuaikan ukuran lebar gambar
-                  height: 24, // Sesuaikan ukuran tinggi gambar
+                  width: 24,
+                  height: 24,
                 ),
               ),
             ),
@@ -85,119 +83,133 @@ class MenuDagingPage extends StatelessWidget {
   }
 
   Widget _buildItemContainer(String title, String price, String imagePath) {
-    return Container(
-      width: double.infinity,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x3D074D09),
-            blurRadius: 4,
-            offset: Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(
+          Routes.DETAILS,
+          arguments: {
+            'itemData': {
+              'title': title,
+              'price': price,
+              'image': imagePath.split('/').last,
+            },
+            'description': controller.getItemDescription(title),
+          },
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 94,
-              height: 81,
-              decoration: ShapeDecoration(
-                color: Color(0xFFE0E0E0),
-                shape: OvalBorder(),
-                shadows: [
-                  BoxShadow(
-                    color: Color(0x3F000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Image.asset(imagePath, fit: BoxFit.fill),
+          shadows: [
+            BoxShadow(
+              color: Color(0x3D074D09),
+              blurRadius: 4,
+              offset: Offset(0, 4),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Work Sans',
-                  fontWeight: FontWeight.w400,
+          ],
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 94,
+                height: 81,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFE0E0E0),
+                  shape: OvalBorder(),
+                  shadows: [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
+                child: Image.asset(imagePath, fit: BoxFit.fill),
               ),
-              SizedBox(height: 8),
-              Text(
-                price,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontFamily: 'Work Sans',
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          Spacer(),
-          Stack(
-            alignment: Alignment.center, // Mengatur alignment utama dari stack
-            children: [
-              Align(
-                alignment: Alignment.topRight, // Atur posisi gambar sesuai kebutuhan
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25, bottom: 37), // Jarak gambar dari tepi
-                  child: Image.asset(
-                    'assets/images/ci_heart-01.png',
-                    width: 24, // Ukuran gambar
-                    height: 24,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Work Sans',
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight, // Mengatur posisi tombol "Add"
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20, top: 45),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                    decoration: ShapeDecoration(
-                      color: Color(0xFF074D09),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0x3F000000),
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Add',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                SizedBox(height: 8),
+                Text(
+                  price,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontFamily: 'Work Sans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 25, bottom: 37),
+                    child: Image.asset(
+                      'assets/images/ci_heart-01.png',
+                      width: 24,
+                      height: 24,
                     ),
                   ),
                 ),
-              ),
-            ],
-          )
-
-        ],
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20, top: 45),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
+                      decoration: ShapeDecoration(
+                        color: Color(0xFF074D09),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Add',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
