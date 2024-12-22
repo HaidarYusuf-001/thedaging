@@ -96,7 +96,7 @@ class ProfileView extends StatelessWidget {
                       _buildMenuItem(
                         icon: Icons.settings,
                         title: 'Setting',
-                        subtitle: 'Gatau pokonya buat setting',
+                        subtitle: 'Kelola passwordmu kawan, tidak ada sistem yang aman',
                         onTap: () {},
                       ),
                     ],

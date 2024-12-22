@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -11,9 +13,12 @@ import '../../menudaging/views/daging_view.dart';
 import '../../menujeroan/views/jeroan_view.dart';
 import '../../menutulang/views/tulang_view.dart';
 import '../../auth/controllers/auth_controller.dart';
+import '../../profile/controllers/profile_controller.dart';
 
 class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+  MainPage({Key? key}) : super(key: key);
+
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +35,14 @@ class MainPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Hello, the Daging's",
-                      style: TextStyle(
+                    Obx(() => Text(
+                      "Hello, ${profileController.name.value}",
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                    ),
+                    )),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -46,7 +51,7 @@ class MainPage extends StatelessWidget {
                               builder: (context) =>  ProfileView()),
                         );
                       },
-                      child: Container(
+                      child: Obx(() => Container(
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
@@ -54,12 +59,21 @@ class MainPage extends StatelessWidget {
                           color: Colors.white,
                           border: Border.all(color: Colors.red.shade900),
                         ),
-                        child: Icon(
+                        child: profileController.profileImagePath.value.isNotEmpty
+                            ? ClipOval(
+                          child: Image.file(
+                            File(profileController.profileImagePath.value),
+                            width: 44,
+                            height: 44,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                            : Icon(
                           Icons.person,
                           color: Colors.red.shade900,
                           size: 30,
                         ),
-                      ),
+                      )),
                     ),
                   ],
                 ),
