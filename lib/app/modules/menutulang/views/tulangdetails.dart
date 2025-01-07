@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/dagingdetails.dart';
+import 'package:thedaging/app/modules/menujeroan/controllers/jeroandetails.dart';
 
-class DagingDetails extends StatelessWidget {
-  final Map<String, Object> itemData;
+class TulangDetails extends StatelessWidget {
+  final Map<String, String> itemData;
   final String description;
-  final DagingDetailsController controller = Get.put(DagingDetailsController());
+  final JeroanDetailsController controller = Get.put(JeroanDetailsController());
   final TextEditingController promoController = TextEditingController();
 
-  DagingDetails({
+  TulangDetails({
     required this.itemData,
     required this.description,
   });
@@ -84,7 +84,7 @@ class DagingDetails extends StatelessWidget {
                           ],
                         ),
                         child: Image.asset(
-                          'assets/images/${itemData['image'] ?? ''}',
+                          'assets/images/${itemData['image']}',
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -93,7 +93,7 @@ class DagingDetails extends StatelessWidget {
 
                     // Product Title
                     Text(
-                      itemData['title']?.toString() ?? '',
+                      itemData['title'] ?? '',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class DagingDetails extends StatelessWidget {
                       children: [
                         if (controller.isPromoValid.value)
                           Text(
-                            itemData['price']?.toString() ?? '',
+                            itemData['price'] ?? '',
                             style: TextStyle(
                               fontSize: 18,
                               decoration: TextDecoration.lineThrough,
@@ -127,12 +127,8 @@ class DagingDetails extends StatelessWidget {
                           ),
                         Text(
                           controller.isPromoValid.value
-                              ? controller.getDiscountedPrice(
-                            (itemData['price']?.toString() ?? ''),  // Ensure it's a String
-                            int.tryParse(itemData['index']?.toString() ?? '0') ?? 0,  // Safely convert to int
-                          )
-
-                              : itemData['price']?.toString() ?? '',
+                              ? controller.getDiscountedPrice(itemData['price'] ?? '')
+                              : itemData['price'] ?? '',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -174,6 +170,10 @@ class DagingDetails extends StatelessWidget {
                         ],
                       ),
                     ),
+
+                    const SizedBox(height: 150),
+
+
                   ],
                 ),
               ),

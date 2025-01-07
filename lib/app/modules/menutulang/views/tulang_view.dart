@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../controllers/tulang_controller.dart';
 
 class MenuTulangPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class MenuTulangPage extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(color: Colors.red.shade900),
+        decoration: BoxDecoration(color: Colors.green.shade900),
         child: Stack(
           children: [
             Positioned(
@@ -48,7 +49,7 @@ class MenuTulangPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.85,
                 decoration: ShapeDecoration(
-                  color: Color(0xFFEFAEAE),
+                  color: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
@@ -85,7 +86,21 @@ class MenuTulangPage extends StatelessWidget {
   }
 
   Widget _buildItemContainer(String title, String price, String imagePath, int index) {
-    return Container(
+    return GestureDetector(
+        onTap: () {
+      Get.toNamed(
+        Routes.DETAILSTULANG,
+        arguments: {
+          'itemData': {
+            'title': title,
+            'price': price,
+            'image': imagePath.split('/').last,
+          },
+          'description': controller.getItemDescription(title),
+        },
+      );
+    },
+    child:  Container(
       width: double.infinity,
       decoration: ShapeDecoration(
         color: Colors.white,
@@ -228,6 +243,6 @@ class MenuTulangPage extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ),);
   }
 }

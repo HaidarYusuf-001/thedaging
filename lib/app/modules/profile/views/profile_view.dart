@@ -11,7 +11,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red.shade900,
+        backgroundColor: Colors.green.shade900,
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
@@ -117,7 +117,7 @@ class ProfileView extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.red.shade900),
+      leading: Icon(icon, color: Colors.green.shade900),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right),

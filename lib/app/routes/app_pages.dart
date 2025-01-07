@@ -8,6 +8,10 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/menudaging/bindings/daging_binding.dart';
 import '../modules/menudaging/views/dagingdetails.dart';
+import '../modules/menujeroan/bindings/jeroan_binding.dart';
+import '../modules/menujeroan/views/jeroandetails.dart';
+import '../modules/menutulang/bindings/tulang_binding.dart';
+import '../modules/menutulang/views/tulangdetails.dart';
 import '../modules/profile/views/edit_profile_view.dart';
 
 part 'app_routes.dart';
@@ -52,6 +56,25 @@ class AppPages {
       name: _Paths.EDITPROFILE,
       page: () => EditProfileView(),
 
+    ),
+    // 🦴 Tulang Details Page
+    GetPage(
+      name: Routes.DETAILSTULANG,
+      page: () => TulangDetails(
+        itemData: Get.arguments?['itemData'],
+        description: Get.arguments?['description'],
+      ),
+      binding: MenuTulangBinding(),
+    ),
+
+    // 🫀 Jeroan Details Page
+    GetPage(
+      name: Routes.DETAILSJEROAN,
+      page: () => JeroanDetails(
+        itemData: Get.arguments?['itemData'],
+        description: Get.arguments?['description'],
+      ),
+      binding: MenuJeroanBinding(),
     ),
     // GetPage(
     //   name: _Paths.ITEMS,

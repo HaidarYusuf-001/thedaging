@@ -13,10 +13,18 @@ class MenuJeroanController extends GetxController {
   // Updated admin check using AuthController
   bool get isAdmin => authController.userEmail.value == "admin123@gmail.com";
 
+  // Add descriptions for each item
+  final Map<String, String> itemDescriptions = {
+    'Daging Potong': 'Daging sapi premium yang dipotong dengan presisi untuk berbagai keperluan memasak.',
+    'Daging Ekor': 'Bagian ekor sapi yang kaya rasa, cocok untuk sup dan semur.',
+    'Daging Tetelan': 'Potongan daging dengan lemak yang ideal untuk masakan berkuah.',
+    'Daging Lidah': 'Bagian lidah sapi yang lembut, sempurna untuk hidangan spesial.',
+  };
+
   @override
   void onInit() {
     super.onInit();
-    loadData(); // Memuat data yang sudah disimpan
+    loadData();
   }
 
   void addItem(String title, String price, String image) {
@@ -51,23 +59,26 @@ class MenuJeroanController extends GetxController {
     );
   }
 
-  // Memuat data dari GetStorage
   void loadData() {
     var storedItems = box.read('jeroanItems');
     if (storedItems != null && storedItems is List) {
-      // Mengonversi List<dynamic> menjadi List<Map<String, String>>
       items.assignAll(
         (storedItems as List).map((item) => Map<String, String>.from(item)).toList(),
       );
     } else {
-      // Menambahkan data default jika belum ada data yang disimpan
       items.assignAll([
         {'title': 'Hati', 'price': '\$40.00', 'image': 'Hati.png'},
         {'title': 'Usus', 'price': '\$40.00', 'image': 'Usus.png'},
         {'title': 'Babat', 'price': '\$40.00', 'image': 'Babat.png'},
         {'title': 'Cingur', 'price': '\$40.00', 'image': 'Cingur.png'},
       ]);
-      saveData(); // Simpan data default di storage
+      saveData();
     }
+  }
+
+
+
+  String getItemDescription(String title) {
+    return itemDescriptions[title] ?? 'Description not available';
   }
 }

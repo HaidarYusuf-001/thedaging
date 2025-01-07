@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'daging_controller.dart';
+
 class DagingDetailsController extends GetxController {
   final isPromoValid = false.obs;
   final promoCode = ''.obs;
   final discount = 0.05; // 5% discount
+  final MenuDagingController menuDagingController = Get.find<MenuDagingController>();
+
+  // Method to calculate discounted price and update MenuDagingController
+  String getDiscountedPrice(String originalPrice, int index) {
+    if (!isPromoValid.value) return originalPrice;
+
+    double price = double.parse(originalPrice.replaceAll('\$', ''));
+    double discountedPrice = price * (1 - discount);
+    String newPrice = '\$${discountedPrice.toStringAsFixed(2)}';
+
+    // Update the price in MenuDagingController as well
+    menuDagingController.updateItemPrice(index, newPrice);
+
+    return newPrice;
+  }
 
   // Method to validate promo code
   void validatePromoCode(String code) {
-    if (code.toUpperCase() == 'DAGING5') {
+    if (code.toUpperCase() == 'LEBARAN5') {
       isPromoValid.value = true;
       promoCode.value = code;
       Get.snackbar(
@@ -29,12 +46,5 @@ class DagingDetailsController extends GetxController {
     }
   }
 
-  // Calculate discounted price
-  String getDiscountedPrice(String originalPrice) {
-    if (!isPromoValid.value) return originalPrice;
 
-    double price = double.parse(originalPrice.replaceAll('\$', ''));
-    double discountedPrice = price * (1 - discount);
-    return '\$${discountedPrice.toStringAsFixed(2)}';
-  }
 }

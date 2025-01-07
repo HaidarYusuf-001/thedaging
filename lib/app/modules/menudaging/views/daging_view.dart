@@ -12,7 +12,7 @@ class MenuDagingPage extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(color: Colors.red.shade900),
+        decoration: BoxDecoration(color: Colors.green.shade900),
         child: Stack(
           children: [
             Positioned(
@@ -46,7 +46,7 @@ class MenuDagingPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.85,
                 decoration: ShapeDecoration(
-                  color: Color(0xFFEFAEAE),
+                  color: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
@@ -57,24 +57,23 @@ class MenuDagingPage extends StatelessWidget {
               top: 185,
               left: 6,
               right: 6,
-              child: Obx(
-                    () => ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: controller.items.length,
-                  itemBuilder: (context, index) {
-                    final item = controller.items[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: _buildItemContainer(
-                        item['title']!,
-                        item['price']!,
-                        'assets/images/${item['image']}', index
-                      ),
-                    );
-                  },
-                ),
-              ),
+              child: Obx(() => ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: controller.items.length,
+                itemBuilder: (context, index) {
+                  final item = controller.items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: _buildItemContainer(
+                      item['title']!,
+                      item['price']!,
+                      'assets/images/${item['image']}',
+                      index,
+                    ),
+                  );
+                },
+              )),
             ),
           ],
         ),
@@ -92,6 +91,7 @@ class MenuDagingPage extends StatelessWidget {
               'title': title,
               'price': price,
               'image': imagePath.split('/').last,
+              'index': index.toString(),
             },
             'description': controller.getItemDescription(title),
           },
@@ -112,135 +112,80 @@ class MenuDagingPage extends StatelessWidget {
             ),
           ],
         ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 94,
-              height: 81,
-              decoration: ShapeDecoration(
-                color: Color(0xFFE0E0E0),
-                shape: OvalBorder(),
-                shadows: [
-                  BoxShadow(
-                    color: Color(0x3F000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 4),
-
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 94,
+                height: 81,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFE0E0E0),
+                  shape: OvalBorder(),
+                  shadows: [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Image.asset(imagePath, fit: BoxFit.fill),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'Work Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    price,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'Work Sans',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
-              child: Image.asset(imagePath, fit: BoxFit.fill),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Work Sans',
-                    fontWeight: FontWeight.w400,
-                  ),
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () {
+                    final item = controller.items[index];
+                    controller.addToCart(
+                      item['title']!,
+                      item['price']!,
+                      item['image']!,
+                    );
+                  },
+                  color: Colors.green.shade700,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  price,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: 'Work Sans',
-                    fontWeight: FontWeight.w600,
-                  ),
+                IconButton(
+                  icon: Icon(Icons.favorite_border),
+                  onPressed: () { // Implement this method in your controller
+                  },
+                  color: Colors.red.shade700,
                 ),
               ],
             ),
-          ),
-          Row(
-            children: [
-              // Tombol Delete
-              if (controller.isAdmin)
-                GestureDetector(
-                  onTap: () {
-                    Get.dialog(
-                      AlertDialog(
-                        title: Text('Delete Item'),
-                        content: Text('Are you sure you want to delete this item?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Get.back(),
-                            child: Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              controller.deleteItem(index);
-                              Get.back();
-                            },
-                            child: Text('Delete'),
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(Icons.delete, color: Colors.red),
-                  ),
-                ),
-              // Tombol Favorit
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Image.asset(
-                  'assets/images/ci_heart-01.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              // Tombol Add
-              GestureDetector(
-                onTap: () {
-                  controller.addToCart(title, price, imagePath.split('/').last);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF074D09),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Add',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -9,12 +9,13 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green.shade100, // Background hijau muda
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
       ),
       body: Padding(
@@ -26,8 +27,15 @@ class HistoryPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Color(0xFFDCEBFF),
+                color: Colors.white, // Background putih untuk search bar
                 borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
@@ -55,11 +63,11 @@ class HistoryPage extends StatelessWidget {
                 separatorBuilder: (context, index) => Divider(color: Colors.black),
                 itemBuilder: (context, index) {
                   return ListTile(
-                    leading: Icon(Icons.access_time, color: Colors.grey),
+                    leading: Icon(Icons.access_time, color: Colors.green), // Green icon
                     title: Text(
                       controller.displayedItems[index],
                       style: TextStyle(
-                        color: Colors.grey.shade800,
+                        color: Colors.green.shade800, // Greenish text color
                         fontWeight: FontWeight.w600,
                       ),
                     ),

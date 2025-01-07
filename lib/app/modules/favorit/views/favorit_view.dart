@@ -12,7 +12,7 @@ class FavoritPage extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(color: Colors.red.shade900),
+        decoration: BoxDecoration(color: Colors.green.shade900),
         child: Stack(
           children: [
             Positioned(
@@ -48,7 +48,7 @@ class FavoritPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.85,
                 decoration: ShapeDecoration(
-                  color: Color(0xFFEFAEAE),
+                  color: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),

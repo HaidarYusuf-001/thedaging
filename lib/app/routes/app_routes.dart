@@ -9,6 +9,8 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const DETAILS = _Paths.DETAILS;
   static const EDITPROFILE = _Paths.EDITPROFILE;
+  static const DETAILSTULANG = _Paths.DETAILSTULANG;
+  static const DETAILSJEROAN = _Paths.DETAILSJEROAN;
 }
 
 abstract class _Paths {
@@ -20,4 +22,6 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const DETAILS = '/details';
   static const EDITPROFILE = '/editprofile';
+  static const DETAILSTULANG = '/details-tulang';
+  static const DETAILSJEROAN = '/details-jeroan';
 }

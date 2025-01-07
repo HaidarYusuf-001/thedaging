@@ -11,7 +11,7 @@ class EditProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red.shade900,
+        backgroundColor: Colors.green.shade900,
         title: const Text('Edit Profile', style: TextStyle(color: Colors.white)),
       ),
       body: Background(
@@ -34,7 +34,7 @@ class EditProfileView extends StatelessWidget {
                         bottom: 0,
                         right: 0,
                         child: CircleAvatar(
-                          backgroundColor: Colors.red.shade900,
+                          backgroundColor: Colors.green.shade900,
                           radius: 20,
                           child: IconButton(
                             icon: const Icon(Icons.camera_alt, color: Colors.white),
@@ -85,7 +85,7 @@ class EditProfileView extends StatelessWidget {
                             Get.back();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red.shade900,
+                            backgroundColor: Colors.green.shade900,
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -127,7 +127,7 @@ class EditProfileView extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.red.shade900, width: 2),
+          borderSide: BorderSide(color: Colors.green.shade900, width: 2),
         ),
       ),
     );

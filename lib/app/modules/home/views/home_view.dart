@@ -1,8 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:thedaging/app/modules/home/views/background.dart';
 import 'package:thedaging/app/modules/profile/views/profile_view.dart';
 import '../../favorit/views/favorit_view.dart';
@@ -23,6 +22,33 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = MediaQuery.of(context).size.width > 600;
+
+    // Tampilkan Snackbar saat halaman dimuat, tetapi hanya sekali
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Ambil SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      bool hasShownSnackbar = prefs.getBool('hasShownSnackbar') ?? false;
+
+      if (!hasShownSnackbar) {
+        // Tampilkan Snackbar jika belum ditampilkan
+        Get.snackbar(
+          "Event Lebaran Idul Adha",
+          "Nikmati diskon 5% dengan kode LEBARAN5",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green.shade100,
+          colorText: Colors.black,
+          margin: const EdgeInsets.all(12),
+          borderRadius: 8,
+          duration: const Duration(seconds: 5),
+          icon: const Icon(Icons.local_offer, color: Colors.green),
+        );
+
+        // Simpan status bahwa Snackbar sudah ditampilkan
+        await prefs.setBool('hasShownSnackbar', true);
+      }
+    });
+
     return Scaffold(
       body: CustomBackground(
         child: Padding(
@@ -31,56 +57,57 @@ class MainPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40),
+                SizedBox(height: isTablet ? 60 : 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Obx(() => Text(
                       "Hello, ${profileController.name.value}",
-                      style: const TextStyle(
-                        fontSize: 24,
+                      style: TextStyle(
+                        fontSize: isTablet ? 32 : 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     )),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  ProfileView()),
-                        );
-                      },
-                      child: Obx(() => Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(color: Colors.red.shade900),
-                        ),
-                        child: profileController.profileImagePath.value.isNotEmpty
-                            ? ClipOval(
-                          child: Image.file(
-                            File(profileController.profileImagePath.value),
-                            width: 44,
-                            height: 44,
-                            fit: BoxFit.cover,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfileView()),
+                          );
+                        },
+                        child: Obx(() => Container(
+                          width: isTablet ? 60 : 44,
+                          height: isTablet ? 60 : 44,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(color: Colors.green.shade900),
                           ),
-                        )
-                            : Icon(
-                          Icons.person,
-                          color: Colors.red.shade900,
-                          size: 30,
-                        ),
-                      )),
-                    ),
+                          child: profileController
+                              .profileImagePath.value.isNotEmpty
+                              ? ClipOval(
+                            child: Image.file(
+                              File(profileController
+                                  .profileImagePath.value),
+                              width: isTablet ? 60 : 44,
+                              height: isTablet ? 60 : 44,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                              : Icon(
+                            Icons.person,
+                            color: Colors.green.shade900,
+                            size: isTablet ? 40 : 30,
+                          ),
+                        ))),
                   ],
                 ),
-                const Text(
+                Text(
                   "Mau pesan daging apa hari ini?",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: isTablet ? 20 : 16,
                     color: Colors.white,
                   ),
                 ),
@@ -96,11 +123,51 @@ class MainPage extends StatelessWidget {
                     filled: true,
                   ),
                 ),
-                const SizedBox(height: 50),
-                const Text(
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.campaign, color: Colors.orange.shade900, size: 40),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Promo Lebaran Idul Adha 🎉",
+                                style: TextStyle(
+                                  fontSize: isTablet ? 18 : 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange.shade900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Nikmati diskon 5% untuk semua pembelian dengan kode promo LEBARAN5. Berlaku hingga 15 Januari!",
+                                style: TextStyle(
+                                  fontSize: isTablet ? 16 : 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
                   "Kategori",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: isTablet ? 28 : 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -128,10 +195,10 @@ class MainPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       "Rekomendasi daging untukmu",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: isTablet ? 26 : 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -139,13 +206,13 @@ class MainPage extends StatelessWidget {
                     Icon(
                       Icons.arrow_circle_right_outlined,
                       color: Colors.black,
-                      size: 24,
+                      size: isTablet ? 30 : 24,
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 200,
+                  height: isTablet ? 250 : 200,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: const [
@@ -168,14 +235,25 @@ class MainPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+                if (Get.find<AuthController>().userEmail.value == "admin123@gmail.com")
+                  Center(
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        Get.to(() => MenuAdminPage());
+                      },
+                      backgroundColor: Colors.green.shade900,
+                      child: const Icon(Icons.add, color: Colors.white),
+                    ),
+                  ),
+                const SizedBox(height: 24),
                 if (Get.find<AuthController>().userEmail.value != "admin123@gmail.com")
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Keranjang Belanja",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: isTablet ? 26 : 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -187,7 +265,7 @@ class MainPage extends StatelessWidget {
                         child: Text(
                           "Lihat Semua",
                           style: TextStyle(
-                            color: Colors.red.shade900,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -197,7 +275,7 @@ class MainPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 if (Get.find<AuthController>().userEmail.value != "admin123@gmail.com")
                   SizedBox(
-                    height: 120,
+                    height: isTablet ? 150 : 250,
                     child: Obx(() => ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: cartController.cartItems.length,
@@ -220,7 +298,7 @@ class MainPage extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.red.shade900,
+        selectedItemColor: Colors.green.shade900,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           switch (index) {
@@ -250,25 +328,10 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: Get.find<AuthController>().userEmail.value == "admin123@gmail.com"
-          ? Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 700.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              Get.to(() => MenuAdminPage());
-            },
-            backgroundColor: Colors.red.shade900,
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
-        ),
-      )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
+
 
 class CategoryCard extends StatelessWidget {
   final String title;
@@ -284,6 +347,8 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return GestureDetector(
       onTap: () {
         if (title == "Daging") {
@@ -295,20 +360,24 @@ class CategoryCard extends StatelessWidget {
         }
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+        padding: EdgeInsets.symmetric(
+            horizontal: isTablet ? 40 : 30, vertical: isTablet ? 12 : 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.red.shade900 : Colors.white,
+          color: isSelected ? Colors.green.shade900 : Colors.white,
           borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: Colors.red.shade900),
+          border: Border.all(color: Colors.green.shade900),
         ),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? Colors.white : Colors.red.shade900),
-            SizedBox(height: 6),
+            Icon(icon,
+                color: isSelected ? Colors.white : Colors.green.shade900,
+                size: isTablet ? 28 : 24),
+            SizedBox(height: isTablet ? 10 : 6),
             Text(
               title,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.red.shade900,
+                fontSize: isTablet ? 16 : 14,
+                color: isSelected ? Colors.white : Colors.green.shade900,
               ),
             ),
           ],
@@ -332,10 +401,12 @@ class RecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Container(
-      width: 150,
-      constraints: const BoxConstraints(
-        maxHeight: 180,
+      width: isTablet ? 200 : 150,
+      constraints: BoxConstraints(
+        maxHeight: isTablet ? 220 : 180,
       ),
       margin: const EdgeInsets.symmetric(horizontal: 6.0),
       padding: const EdgeInsets.all(12.0),
@@ -356,7 +427,7 @@ class RecommendationCard extends StatelessWidget {
         children: [
           Image.asset(
             imagePath,
-            height: 100,
+            height: isTablet ? 120 : 100,
             fit: BoxFit.cover,
           ),
           const SizedBox(height: 8),
@@ -365,9 +436,9 @@ class RecommendationCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: isTablet ? 18 : 16,
               color: Colors.black,
             ),
           ),
@@ -379,8 +450,8 @@ class RecommendationCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 rating.toString(),
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: isTablet ? 18 : 16,
                   color: Colors.black,
                 ),
               ),
@@ -408,31 +479,37 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isTablet = screenWidth > 600;
+
+    // Calculate dynamic sizes based on screen width
+    double imageSize = isTablet ? screenWidth * 0.25 : screenWidth * 0.3;
+    double textSize = isTablet ? 18.0 : 16.0;
+    double padding = isTablet ? 16.0 : 12.0;
+
     return Container(
-      width: 200,
-      margin: const EdgeInsets.only(right: 12.0),
-      padding: const EdgeInsets.all(12.0),
+      width: isTablet ? 180 : 140,
+      margin: const EdgeInsets.symmetric(horizontal: 6.0),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Colors.black26,
             blurRadius: 6,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Row(
+      child: ListView(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(
-              imagePath,
-              width: 70,
-              height: 70,
-              fit: BoxFit.cover,
-            ),
+          // Adjust image size dynamically based on screen size
+          Image.asset(
+            imagePath,
+            height: imageSize,
+            width: imageSize,
+            fit: BoxFit.cover,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -442,27 +519,26 @@ class CartItemCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  price,
                   style: TextStyle(
-                    color: Colors.red.shade900,
                     fontWeight: FontWeight.bold,
+                    fontSize: textSize,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Jumlah: $quantity',
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
+                  "Rp $price",
+                  style: TextStyle(
+                    fontSize: textSize - 2,
+                    color: Colors.green.shade900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Jumlah: $quantity",
+                  style: TextStyle(
+                    fontSize: textSize - 2,
+                    color: Colors.grey.shade700,
                   ),
                 ),
               ],
